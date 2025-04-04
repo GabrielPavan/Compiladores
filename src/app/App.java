@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+
+import data.GramaticData;
 import infra.FileManager;
 import others.FilesPath;
 
@@ -13,7 +15,8 @@ public class App {
 		
 		if(fileManager.FileExist(FilesPath.DefaultGramaticFilePath)) {
 			try {
-				List<String> GramaticFile = fileManager.ReadFile(FilesPath.DefaultGramaticFilePath);
+				List<String> GramaticFileList = fileManager.ReadFile(FilesPath.DefaultGramaticFilePath);
+				GramaticData gramaticData = new GramaticData(GramaticFileList);
 				
 			} catch (IOException e) {
 				

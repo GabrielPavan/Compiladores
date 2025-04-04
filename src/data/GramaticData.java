@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GramaticData {
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	List<String> linhas = new ArrayList();
+	List<String> GramaticData;
+	
+	public GramaticData(List<String> pGramaticData) {
+		GramaticData = pGramaticData;
+	}
 	
 	
 }
