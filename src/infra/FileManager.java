@@ -54,6 +54,10 @@ public class FileManager {
 		return DataList;
 	}
 	
+	public boolean GramaticFileExist() {
+		File executionFile = new File(FilesPath.DefaultGramaticFilePath);
+		return executionFile.exists();
+	}
 	public boolean ExecutionFileExist() {
 		File executionFile = new File(FilesPath.DefaultExecutionFilePath);
 		return executionFile.exists();

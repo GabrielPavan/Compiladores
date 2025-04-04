@@ -10,10 +10,12 @@ public class App {
 	public static void main(String[] args) {
 		FileManager fileManager = new FileManager();
 		
+		
+		
 		if(fileManager.ExecutionFileExist()) {
 			try {
 				List<String> DataFile = fileManager.ReadExecutionFile();
-				JOptionPane.showMessageDialog(null, DataFile.toString());
+				
 			} catch (IOException e) {
 				
 			}
