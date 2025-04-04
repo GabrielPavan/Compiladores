@@ -37,8 +37,8 @@ public class FileManager {
 		BufferedWriter = new BufferedWriter(OutputStreamWriter);
 	}
 	
-	public List<String> ReadExecutionFile() throws IOException {
-		BufferFileReader(FilesPath.DefaultExecutionFilePath);
+	public List<String> ReadFile(String path) throws IOException {
+		BufferFileReader(path);
 		List<String> DataList = GetDataFromFile();
 		closeFile();
 
@@ -54,13 +54,10 @@ public class FileManager {
 		return DataList;
 	}
 	
-	public boolean GramaticFileExist() {
-		File executionFile = new File(FilesPath.DefaultGramaticFilePath);
-		return executionFile.exists();
-	}
-	public boolean ExecutionFileExist() {
-		File executionFile = new File(FilesPath.DefaultExecutionFilePath);
-		return executionFile.exists();
+
+	public boolean FileExist(String path) {
+		File file = new File(path);
+		return file.exists();
 	}
 	
 	public void closeFile() throws IOException {
