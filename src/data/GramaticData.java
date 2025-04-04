@@ -20,7 +20,7 @@ public class GramaticData {
 			String[] CodeAndToken = GramaticData.get(i).split(" ");
 			GramaticTokens.put(CodeAndToken[1], Integer.parseInt(CodeAndToken[0]));
 		}
-		System.out.println(GramaticTokens.toString());
+		
 	}
 	
 	public int SearchDictionary(String lexema) {
