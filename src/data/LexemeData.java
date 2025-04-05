@@ -39,6 +39,7 @@ public class LexemeData {
 
 		Pattern identPattern = GramaticRegex.IdentGramaticRegex;
 		Pattern nintPattern = GramaticRegex.NintGramaticRegex;
+		Pattern nrealPattern = GramaticRegex.NrealGramaticRegex;
 		
 		System.out.println(lexemeData);
 		
@@ -54,6 +55,19 @@ public class LexemeData {
 				if (identMatcher.find()) {
 					tokensResult.add(gramaticData.SearchToken("ident"));
 				} else if(nintMatcher.find()){
+					String nextlexema = lexemeData.get(i+1);
+					int nextcod = gramaticData.SearchToken(nextlexema);
+					if(nextcod == 35) {
+						nextlexema = lexema.concat(lexemeData.get(i+1) + lexemeData.get(i+2));
+						Matcher nrealMatcher = nrealPattern.matcher(nextlexema);
+						if(nrealMatcher.find()) {
+							tokensResult.add(gramaticData.SearchToken("nreal"));
+							i = i + 2;
+							continue;
+						} else {
+							System.err.println("Erro! - Lexema nao encotrado " + nextlexema);
+						}
+					}
 					tokensResult.add(gramaticData.SearchToken("nint"));
 				} else {
 					System.err.println("Erro! - Lexema nao encotrado " + lexema);

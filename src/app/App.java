@@ -1,9 +1,7 @@
 package app;
+
 import java.io.IOException;
 import java.util.List;
-
-import javax.swing.JOptionPane;
-
 import data.LexemeData;
 import data.GramaticData;
 import infra.FileManager;
@@ -25,7 +23,7 @@ public class App {
 				System.out.println(e.getMessage());
 			}
 		} else {
-			JOptionPane.showMessageDialog(null, "Erro: Arquivo de gramatica nao existe!");
+			System.err.println("Erro: Arquivo de gramatica nao existe!");
 			System.exit(0);
 		}
 		
@@ -37,11 +35,11 @@ public class App {
 				System.out.println(e.getMessage());
 			}
 		} else {
-			JOptionPane.showMessageDialog(null, "Erro: Arquivo de compilação nao existe!");
+			System.err.println("Erro: Arquivo de compilação nao existe!");
+			System.exit(0);
 		}
 		
 		System.out.println(lexemeData.getCods());
-		JOptionPane.showMessageDialog(null, "Análise Lexical: \n" + lexemeData.getCods());
 	}
 
 }
