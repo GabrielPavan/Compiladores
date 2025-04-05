@@ -1,6 +1,5 @@
 package data;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -14,21 +13,18 @@ public class GramaticData {
 		CreateDictionary();
 	}
 	
-	public void CreateDictionary() {
-		GramaticTokens = new Hashtable();
+	private void CreateDictionary() {
+		GramaticTokens = new Hashtable<String, Integer>();
 		for (int i = 0; i < GramaticData.size(); i++) {
 			String[] CodeAndToken = GramaticData.get(i).split(" ");
 			GramaticTokens.put(CodeAndToken[1], Integer.parseInt(CodeAndToken[0]));
-		}
-		
+		}		
 	}
 	
-	public int SearchDictionary(String lexema) {
+	public int SearchToken(String lexema) {
 		if(GramaticTokens.get(lexema) != null) {
 			return GramaticTokens.get(lexema);
 		}
 		return 0;
 	}
-	
-	
 }

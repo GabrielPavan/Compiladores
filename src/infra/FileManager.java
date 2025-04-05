@@ -13,8 +13,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import others.FilesPath;
-
 public class FileManager {
 	
 	private InputStream InputStream;
@@ -39,21 +37,14 @@ public class FileManager {
 	
 	public List<String> ReadFile(String path) throws IOException {
 		BufferFileReader(path);
-		List<String> DataList = GetDataFromFile();
-		closeFile();
-
-		return DataList;
-	}
-	
-	public List<String> GetDataFromFile() throws IOException {
 		String ReadLine;
 		List<String> DataList = new ArrayList<String>();
 		while ((ReadLine = BufferedReader.readLine()) != null) {
 			DataList.add(ReadLine);
 		}
+		closeFile();
 		return DataList;
 	}
-	
 
 	public boolean FileExist(String path) {
 		File file = new File(path);
