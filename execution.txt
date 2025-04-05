@@ -1,1 +1,1 @@
-program master; const a = 2; var b : integer; 
+program master; const a = 2; var b : integer;procedure funcOne ; begin end

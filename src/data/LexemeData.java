@@ -56,7 +56,7 @@ public class LexemeData {
 				} else if(nintMatcher.find()){
 					tokensResult.add(gramaticData.SearchToken("nint"));
 				} else {
-					System.err.println("Erro! - Lexema nao encotrado + " + lexema);
+					System.err.println("Erro! - Lexema nao encotrado " + lexema);
 				}
 				break;
 			case 25:
