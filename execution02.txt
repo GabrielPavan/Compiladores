@@ -1,0 +1,7 @@
+program calcular;
+const pi = 3;
+var x, y : integer;
+    z : real;
+begin
+  print { x, y, z }
+end

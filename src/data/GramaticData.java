@@ -11,6 +11,7 @@ public class GramaticData {
 	public GramaticData(List<String> pGramaticData) {
 		GramaticData = pGramaticData;
 		CreateDictionary();
+		InformaGramatica();
 	}
 	
 	private void CreateDictionary() {
@@ -20,11 +21,17 @@ public class GramaticData {
 			GramaticTokens.put(CodeAndToken[1], Integer.parseInt(CodeAndToken[0]));
 		}		
 	}
-	
 	public int SearchToken(String lexema) {
 		if(GramaticTokens.get(lexema) != null) {
 			return GramaticTokens.get(lexema);
 		}
 		return 0;
+	}
+	public void InformaGramatica() {
+		System.out.println("Seguinte relaçao de tokens e codigos foi utilizada: \n");
+		for (String string : GramaticData) {
+			System.out.println(string);
+		}
+		System.out.println();
 	}
 }

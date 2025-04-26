@@ -1,0 +1,21 @@
+program somaA;
+var a, b : real;
+
+begin
+  read ( a );
+  read ( b );
+  if a > b then
+    begin
+      print { a }
+    end
+  else
+    begin
+      print { b }
+    end;
+
+  while a < 10 do
+    begin
+      print { a };
+      a := a + 1.90
+    end
+end

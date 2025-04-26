@@ -27,9 +27,12 @@ public class App {
 			System.exit(0);
 		}
 		
-		if(fileManager.FileExist(FilesPath.DefaultExecutionFilePath)) {
+		if(fileManager.FileExist(FilesPath.DefaultExecutionFile01Path)) {
 			try {
-				List<String> ExecutionFileList = fileManager.ReadFile(FilesPath.DefaultExecutionFilePath);
+				//Altere qual arquivo quer executar
+				List<String> ExecutionFileList = fileManager.ReadFile(FilesPath.DefaultExecutionFile01Path);
+				//List<String> ExecutionFileList = fileManager.ReadFile(FilesPath.DefaultExecutionFile02Path);
+				//List<String> ExecutionFileList = fileManager.ReadFile(FilesPath.DefaultExecutionFile03Path);
 				lexemeData = new LexemeData(ExecutionFileList, gramaticData);
 			} catch (IOException e) {
 				System.out.println(e.getMessage());

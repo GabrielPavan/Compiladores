@@ -1,0 +1,11 @@
+program Saludar;
+var nome : string;
+
+procedure saudacao( msg : string );
+begin
+  print { msg }
+end;
+
+begin
+  saudacao(Ola)
+end
