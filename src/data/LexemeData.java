@@ -8,23 +8,30 @@ import java.util.regex.Pattern;
 import others.GramaticRegex;
 
 public class LexemeData {
-	List<String> executionData;
-	GramaticData gramaticData;
-	List<String> lexemeData;
-	List<Integer> tokensResultInteger = new ArrayList<Integer>();;
-	List<String> tokensResultString = new ArrayList<String>();;
+	private List<String> executionData;
+	private GramaticData gramaticData;
+	private List<String> lexemeData;
+	
+	private List<Token> tokens;
 
 	public LexemeData(List<String> pExecutionData, GramaticData pGramaticData) {
-		executionData = pExecutionData;
-		gramaticData = pGramaticData;
-		InformaExecFile();
+		this.executionData = pExecutionData;
+		this.gramaticData = pGramaticData;
+		
+		this.tokens = new ArrayList<>();
+		
+		System.out.println("--- Iniciando Análise Léxica ---");
 		findTokens();
-		InformaTransformCodToTokens();
+		System.out.println("--- Análise Léxica Concluída ---\n");
+	}
+
+	public List<Token> getTokens() {
+		this.tokens.add(new Token("$", "$", executionData.size())); 
+		return this.tokens;
 	}
 
 	private void findTokens() {
-		lexemeData = new ArrayList<>();
-
+		this.lexemeData = new ArrayList<>();
 		Pattern gramaticPattern = GramaticRegex.GenericGramaticRegex;
 
 		for (int i = 0; i < executionData.size(); i++) {
@@ -33,7 +40,7 @@ public class LexemeData {
 		    while (matcher.find()) {
 		        lexemeData.add(matcher.group());
 		    }
-		    transformeTokensInCods(i+1);
+		    transformeTokensInCods(i + 1);
 		    lexemeData.clear();
 		}
 	}
@@ -53,46 +60,51 @@ public class LexemeData {
 				Matcher nintMatcher = nintPattern.matcher(lexema);
 				
 				if (identMatcher.find()) {
-					int codIdent = gramaticData.SearchToken("ident");
-					tokensResultInteger.add(codIdent);
-					tokensResultString.add("Token: " + codIdent + " - lexema: " + lexema + " - linha: " + line);
+				
+					this.tokens.add(new Token("ident", lexema, line));
 				} else if(nintMatcher.find()){
-					String nextlexema = lexemeData.get(i+1);
-					int nextcod = gramaticData.SearchToken(nextlexema);
-					if(nextcod == 35) {
-						nextlexema = lexema.concat(lexemeData.get(i+1) + lexemeData.get(i+2));
-						Matcher nrealMatcher = nrealPattern.matcher(nextlexema);
-						if(nrealMatcher.find()) {
-							int codNreal = gramaticData.SearchToken("nreal");
-							tokensResultInteger.add(codNreal);
-							tokensResultString.add("Token: " + codNreal + " - lexema: " + nextlexema + " - linha: " + line);
-							i = i + 2;
-							continue;
+					if ((i + 2) < lexemeData.size() && lexemeData.get(i + 1).equals(".")) {
+						String lexemaRealCompleto = lexema + lexemeData.get(i + 1) + lexemeData.get(i + 2);
+						Matcher nrealMatcher = nrealPattern.matcher(lexemaRealCompleto);
+						if (nrealMatcher.find()) {
+							this.tokens.add(new Token("nreal", lexemaRealCompleto, line));
+							i += 2;
 						} else {
-							System.err.println("Erro! - Lexema nao encotrado " + nextlexema + "  - linha: " + line);
+							
+							this.tokens.add(new Token("nint", lexema, line));
 						}
+					} else {
+						
+						this.tokens.add(new Token("nint", lexema, line));
 					}
-					int codNit = gramaticData.SearchToken("nint");
-					tokensResultInteger.add(codNit);
-					tokensResultString.add("Token: " + codNit + " - lexema: " + nextlexema + " - linha: " + line);
 				} else {
-					System.err.println("Erro! - Lexema nao encotrado " + lexema + " linha: " + line);
+					
+					System.err.println("Erro Léxico! - Lexema '" + lexema + "' não reconhecido na linha: " + line);
 				}
 				break;
-			case 25:
-			case 29:
-			case 33:
-				String nextlexema = lexema.concat(lexemeData.get(i+1));
-				int codlexema = gramaticData.SearchToken(nextlexema);
-				if(codlexema != 0) {
-					tokensResultInteger.add(codlexema);
-					tokensResultString.add("Token: " + codlexema + " - lexema: " + nextlexema + " - linha: " + line);
-					i++;
-					continue;
+			
+			
+			case 25: // >
+			case 29: // <
+			case 33: // :
+				if ((i + 1) < lexemeData.size()) {
+					String nextChar = lexemeData.get(i + 1);
+					String lexemaComposto = lexema + nextChar;
+					int codComposto = gramaticData.SearchToken(lexemaComposto);
+					if (codComposto != 0) {
+						this.tokens.add(new Token(lexemaComposto, lexemaComposto, line));
+						i++;
+					} else {
+						
+						this.tokens.add(new Token(lexema, lexema, line));
+					}
+				} else {
+					this.tokens.add(new Token(lexema, lexema, line));
 				}
+				break;
+			
 			default:
-				tokensResultInteger.add(cod);
-				tokensResultString.add("Token: " + cod + " - lexema: " + lexema + " - linha: " + line);
+				this.tokens.add(new Token(lexema, lexema, line));
 				break;
 			}
 		}
@@ -103,15 +115,5 @@ public class LexemeData {
 			System.out.println(string);
 		}
 		System.out.println();
-	}
-	public void InformaTransformCodToTokens() {
-		System.out.println("O arquivo de execução foi transformado na sequinte lista de tokens: \n");
-		for (String string : tokensResultString) {
-			System.out.println(string);
-		}
-		System.out.println();
-	}
-	public List<Integer> getCods(){
-		return tokensResultInteger;
 	}
 }
