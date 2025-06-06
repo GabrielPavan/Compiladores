@@ -4,4 +4,4 @@ var x, y : integer;
     z : real;
 begin
   print { x, y, z }
-end.
+end

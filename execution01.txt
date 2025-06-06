@@ -18,4 +18,4 @@ begin
       print { a };
       a := a + 1.90
     end
-end.
+end

@@ -1,8 +1,4 @@
-package app;
-
-import data.Token;
-import data.TabelaAnaliseSintatica;
-import data.RegrasProducao;
+package data;
 
 import java.util.List;
 import java.util.Stack;

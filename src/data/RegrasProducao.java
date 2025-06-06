@@ -7,7 +7,7 @@ public class RegrasProducao {
     private static final Map<Integer, String[]> regras = new HashMap<>();
 
     static {
-        regras.put(1, new String[]{"program", "ident", ";", "<DECLARACOES>", "<BLOCO>", "."});
+        regras.put(1, new String[]{"program", "ident", ";", "<DECLARACOES>", "<BLOCO>"});
         regras.put(2, new String[]{"<CONSTANTES>", "<VARIAVEIS>", "<PROCEDIMENTOS>"});
         regras.put(3, new String[]{"const", "ident", "=", "nint", ";", "<CONSTANTES>"});
         regras.put(4, new String[]{});
