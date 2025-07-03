@@ -16,6 +16,6 @@ begin
   while a < 10 do
     begin
       print { a };
-      a := a + 1.90
+      a := a + "oi"
     end
 end
