@@ -16,6 +16,6 @@ begin
   while a < 10 do
     begin
       print { a };
-      a := a + "oi"
+      a := a + "ola"
     end
-end
+end.

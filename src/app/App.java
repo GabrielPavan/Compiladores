@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import data.LexemeData;
-import data.AnalisadorSintatico;
 import data.GramaticData;
 import data.Token;
 import infra.FileManager;

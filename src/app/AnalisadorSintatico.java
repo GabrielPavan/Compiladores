@@ -1,9 +1,8 @@
-package data;
+package app;
 
 import data.Token;
 import data.TabelaAnaliseSintatica;
 import data.RegrasProducao;
-
 import java.util.List;
 import java.util.Stack;
 
@@ -15,7 +14,7 @@ public class AnalisadorSintatico {
     private final TabelaAnaliseSintatica tabela;
     private AnalisadorSemantico semantico;
     private boolean erroSintaticoEncontrado = false;
-    private boolean erroSemanticoEncontradoFlag = false; 
+    private boolean erroSemanticoEncontrado = false; 
 
     public AnalisadorSintatico(List<Token> tokens) {
         this.tokens = tokens;
@@ -30,14 +29,17 @@ public class AnalisadorSintatico {
 
     public void analisar() {
         System.out.println("--- Iniciando Análise Sintática e Semântica ---");
+        
+        semantico.executar("#8", null, null); // Abre o escopo global
 
         while (!pilha.isEmpty()) {
+            if (erroSintaticoEncontrado) break;
             imprimirEstado();
 
             String topoPilha = pilha.peek();
             
             if (tokenIndex >= tokens.size()) {
-                reportarErro("Fim de arquivo inesperado.", 0);
+                reportarErroSintatico("Fim de arquivo inesperado.", 0);
                 break;
             }
             Token tokenAtual = tokens.get(tokenIndex);
@@ -47,7 +49,10 @@ public class AnalisadorSintatico {
             }
             
             if (topoPilha.startsWith("#")) {
-                executarAcaoSemantica(topoPilha);
+                Token tokenAnterior = (tokenIndex > 0) ? tokens.get(tokenIndex - 1) : null;
+                if(semantico.executar(topoPilha, tokenAnterior, tokenAtual)) {
+                    this.erroSemanticoEncontrado = true;
+                }
                 pilha.pop();
                 continue; 
             }
@@ -57,8 +62,7 @@ public class AnalisadorSintatico {
                     pilha.pop();
                     tokenIndex++;
                 } else {
-                    reportarErro("Terminal esperado '" + topoPilha + "', mas encontrado '" + tokenAtual.codigo + "'.", tokenAtual.linha);
-                    break;
+                    reportarErroSintatico("Terminal esperado '" + topoPilha + "', mas encontrado '" + tokenAtual.codigo + "'.", tokenAtual.linha);
                 }
             } else { 
                 Integer numeroRegra = tabela.getRegra(topoPilha, tokenAtual.codigo);
@@ -71,16 +75,19 @@ public class AnalisadorSintatico {
                         }
                     }
                 } else {
-                    reportarErro("Não há regra para o não-terminal '" + topoPilha + "' com o token de entrada '" + tokenAtual.codigo + "'.", tokenAtual.linha);
-                    break;
+                    reportarErroSintatico("Não há regra para o não-terminal '" + topoPilha + "' com o token de entrada '" + tokenAtual.codigo + "'.", tokenAtual.linha);
                 }
             }
+        }
+        
+        if (!erroSintaticoEncontrado) {
+            semantico.executar("#9", null, null); // Fecha o escopo global
         }
         
         System.out.println("\n--- Fim da Análise ---");
         if (erroSintaticoEncontrado) {
              System.out.println("Análise concluída com ERROS SINTÁTICOS.");
-        } else if (erroSemanticoEncontradoFlag) {
+        } else if (erroSemanticoEncontrado) {
              System.out.println("Análise concluída com ERROS SEMÂNTICOS.");
         } else if (pilha.peek().equals("$") && tokens.get(tokenIndex).codigo.equals("$")) {
              System.out.println("Análise concluída com SUCESSO!");
@@ -89,20 +96,12 @@ public class AnalisadorSintatico {
         }
     }
     
-    private void executarAcaoSemantica(String acao) {
-        Token tokenAnterior = this.tokenIndex > 0 ? tokens.get(tokenIndex - 1) : null;
-        Token tokenAtual = tokens.get(tokenIndex);
-
-        if(semantico.executar(acao, tokenAnterior, tokenAtual)){
-            this.erroSemanticoEncontradoFlag = true;
-        }
-    }
-    
     private boolean isTerminal(String simbolo) {
         return !simbolo.startsWith("<") || !simbolo.endsWith(">");
     }
 
-    private void reportarErro(String mensagem, int linha) {
+    private void reportarErroSintatico(String mensagem, int linha) {
+        if (this.erroSintaticoEncontrado) return;
         this.erroSintaticoEncontrado = true;
         System.err.printf("\nERRO SINTÁTICO na linha %d: %s\n", linha, mensagem);
     }
