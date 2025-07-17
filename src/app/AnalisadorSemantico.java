@@ -11,8 +11,7 @@ import data.Token;
 public class AnalisadorSemantico {
 
     private TabelaDeSimbolos tabelaDeSimbolos;
-    private Stack<Tipo> pilhaDeTipos; 
-    
+    private Stack<Tipo> pilhaDeTipos;
     private List<String> listaDeIdentificadores;
     private Tipo tipoAtual;
 
@@ -21,47 +20,46 @@ public class AnalisadorSemantico {
         this.pilhaDeTipos = new Stack<>();
         this.listaDeIdentificadores = new ArrayList<>();
     }
-    
+
     public boolean executar(String acao, Token tokenAnterior, Token tokenAtual) {
         switch (acao) {
             case "#1":
                 adicionarIdParaDeclaracao(tokenAnterior.lexema);
                 break;
-            case "#2":
+            case "#2_INT":
                 setTipoDeclaracao(Tipo.INTEGER);
                 break;
-            case "#3":
+            case "#2_REAL":
                 setTipoDeclaracao(Tipo.REAL);
                 break;
+            case "#2_STR":
+                setTipoDeclaracao(Tipo.STRING);
+                break;
+            case "#3":
+                return processarDeclaracaoVariavel(tokenAnterior.linha);
             case "#4":
-                if (processarDeclaracaoVariavel(tokenAnterior.linha)) {
-                    return true;
-                }
-                break;
-            case "#5":
-                if (verificarIdentificador(tokenAnterior.lexema, tokenAnterior.linha)) {
-                    return true;
-                }
-                break;
-            case "#6_INT":
+                return verificarIdentificador(tokenAnterior.lexema, tokenAnterior.linha);
+            case "#5_INT":
                 empilharTipo(Tipo.INTEGER);
                 break;
-            case "#6_REAL":
+            case "#5_REAL":
                 empilharTipo(Tipo.REAL);
                 break;
-            case "#6_STR":
+            case "#5_STR":
                 empilharTipo(Tipo.STRING);
                 break;
+            case "#6":
+                return checarOperacaoAritmetica(tokenAtual.linha);
             case "#7":
-                if (checarOperacaoAritmetica(tokenAtual.linha)) {
-                    return true;
-                }
-                break;
+                return checarAtribuicao(tokenAtual.linha);
             case "#8":
-                if (checarAtribuicao(tokenAtual.linha)) {
-                    return true;
-                }
+                tabelaDeSimbolos.novoEscopo();
                 break;
+            case "#9":
+                tabelaDeSimbolos.fecharEscopo();
+                break;
+            case "#10":
+                return processarDeclaracaoProcedimento(tokenAnterior.lexema, tokenAnterior.linha);
         }
         return false;
     }
@@ -75,16 +73,25 @@ public class AnalisadorSemantico {
     }
 
     private boolean processarDeclaracaoVariavel(int linha) {
-        boolean erro = false;
+        boolean erroEncontrado = false;
         for (String nomeId : listaDeIdentificadores) {
             Simbolo novoSimbolo = new Simbolo(nomeId, this.tipoAtual);
             if (!tabelaDeSimbolos.adicionarSimbolo(novoSimbolo)) {
                 System.err.printf("ERRO SEMÂNTICO na linha %d: Identificador '%s' já declarado neste escopo.\n", linha, nomeId);
-                erro = true;
+                erroEncontrado = true;
             }
         }
         listaDeIdentificadores.clear();
-        return erro;
+        return erroEncontrado;
+    }
+    
+    private boolean processarDeclaracaoProcedimento(String nome, int linha) {
+        Simbolo simbolo = new Simbolo(nome, Tipo.PROCEDURE);
+        if (!tabelaDeSimbolos.adicionarSimbolo(simbolo)) {
+            System.err.printf("ERRO SEMÂNTICO na linha %d: Identificador '%s' já declarado neste escopo.\n", linha, nome);
+            return true;
+        }
+        return false;
     }
     
     private boolean verificarIdentificador(String nomeId, int linha) {

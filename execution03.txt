@@ -7,5 +7,5 @@ begin
 end;
 
 begin
-  saudacao(Ola)
-end
+  saudacao("Ola")
+end.
